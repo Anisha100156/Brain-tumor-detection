@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "ui",
+			"path": "."
+		},
+		{
+			"name": "models",
+			"path": "../brain tumor/models"
+		}
+	],
+	"settings": {}
+}
