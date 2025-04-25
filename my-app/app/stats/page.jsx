@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { TextGenerateEffect } from "@/components/ui/text-generate";
 import Waves from "@/components/ui/Waves";
-import Navigation from "@/components/ui/Navigation";
+import Navigation from "@/components/ui/navigation";
 import HelpSection from "@/components/ui/help";
 import Footer from "@/components/ui/contactus";
 import OurExperience from "@/components/ui/data";
