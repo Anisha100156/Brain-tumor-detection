@@ -9,24 +9,21 @@ from keras.utils import load_img, img_to_array
 import numpy as np
 import os
 
-# Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # ✅ Allow cross-origin requests from frontend
+CORS(app)
 
-# Load the trained model
+# Load the model (no compile needed for prediction)
 model = load_model('models/model.h5', compile=False)
 
 # Class labels
 class_labels = ['pituitary', 'glioma', 'notumor', 'meningioma']
 
-# Define the uploads folder
+# Set upload folder
 UPLOAD_FOLDER = './uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Helper function to predict tumor type
+
 def predict_tumor(image_path):
     IMAGE_SIZE = 128
     img = load_img(image_path, target_size=(IMAGE_SIZE, IMAGE_SIZE))
@@ -42,7 +39,12 @@ def predict_tumor(image_path):
     else:
         return f"Tumor: {class_labels[predicted_class_index]}", confidence_score
 
-# Route to handle image uploads and predictions
+
+@app.route('/')
+def index():
+    return jsonify({"message": "Tumor Detection API is running."})
+
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
@@ -58,19 +60,22 @@ def predict():
 
         result, confidence = predict_tumor(file_path)
 
+        image_url = request.host_url + 'uploads/' + file.filename
+
         return jsonify({
             'result': result,
-            'confidence': f"{confidence*100:.2f}%",
-            'image_url': f"http://127.0.0.1:5000/uploads/{file.filename}"
+            'confidence': f"{confidence * 100:.2f}%",
+            'image_url': image_url
         })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Route to serve uploaded images
+
 @app.route('/uploads/<filename>')
 def get_uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0')
