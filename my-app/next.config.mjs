@@ -1,4 +1,4 @@
-import path from 'path';
+const path = require('path');
 
 const nextConfig = {
   webpack(config) {
@@ -9,4 +9,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
